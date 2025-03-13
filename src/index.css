@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 210 100% 50%;
+    --primary: 220 70% 50%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 150 60% 50%;
@@ -55,7 +55,7 @@
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 50%;
+    --primary: 220 70% 60%;
     --primary-foreground: 222 47% 11%;
 
     --secondary: 150 60% 50%;
@@ -173,4 +173,20 @@
   opacity: 0;
   transform: scale(0.98);
   transition: opacity 300ms, transform 300ms;
+}
+
+/* Theme transition */
+.theme-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Glassmorphism effect */
+.glassmorphism {
+  @apply bg-white/30 dark:bg-black/30 backdrop-blur-lg border border-white/20 dark:border-gray-800/30;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
 }
