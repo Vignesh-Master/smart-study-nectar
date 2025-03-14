@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +11,9 @@ import {
   Users, 
   BookOpen,
   ArrowRight,
-  ChevronRight
+  ChevronRight,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CustomCard } from '@/components/ui/custom-card';
@@ -20,7 +21,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   
   const features = [
@@ -74,8 +75,13 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 to-background py-20 px-4">
         <div className="absolute right-4 top-4 z-50">
-          <Button variant="ghost" size="sm" onClick={toggleTheme}>
-            Toggle Theme
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
         
@@ -238,11 +244,13 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-2xl font-bold mb-4 md:mb-0">SmartStudy</div>
-            <div className="flex space-x-8">
-              <Link to="#" className="text-muted-foreground hover:text-foreground">About</Link>
-              <Link to="#" className="text-muted-foreground hover:text-foreground">Privacy</Link>
-              <Link to="#" className="text-muted-foreground hover:text-foreground">Terms</Link>
-              <Link to="#" className="text-muted-foreground hover:text-foreground">Contact</Link>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link>
+              <Link to="/services" className="text-muted-foreground hover:text-foreground">Services</Link>
+              <Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy</Link>
+              <Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms</Link>
+              <Link to="/testimonials" className="text-muted-foreground hover:text-foreground">Testimonials</Link>
+              <Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link>
             </div>
           </div>
           <div className="mt-8 text-center text-muted-foreground text-sm">

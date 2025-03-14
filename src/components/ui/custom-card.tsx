@@ -12,6 +12,7 @@ interface CustomCardProps {
   glassmorphism?: boolean;
   hover?: boolean;
   animation?: 'none' | 'float' | 'slide-up' | 'fade-in';
+  style?: React.CSSProperties;
 }
 
 export function CustomCard({
@@ -23,6 +24,7 @@ export function CustomCard({
   glassmorphism = false,
   hover = true,
   animation = 'none',
+  style,
 }: CustomCardProps) {
   const cardClasses = cn(
     glassmorphism ? "bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border border-white/20 dark:border-gray-800/30" : "",
@@ -34,7 +36,7 @@ export function CustomCard({
   );
 
   return (
-    <Card className={cardClasses}>
+    <Card className={cardClasses} style={style}>
       {(title || description) && (
         <CardHeader>
           {title && <CardTitle>{title}</CardTitle>}
