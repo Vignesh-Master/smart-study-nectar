@@ -1,152 +1,112 @@
 
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Network, Cloud, Code, BarChart2, Brain, Users, Settings, LogOut } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Separator } from '@/components/ui/separator';
+import { 
+  LayoutDashboard, BookOpen, BarChart2, 
+  Brain, User, Settings, LogOut, Code
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { useToast } from '@/components/ui/use-toast';
-
-interface NavigationItem {
-  label: string;
-  icon: React.ReactNode;
-  href: string;
-  requiresAuth?: boolean;
-}
-
-const navigationItems: NavigationItem[] = [
-  {
-    label: 'Dashboard',
-    icon: <LayoutDashboard className="h-5 w-5" />,
-    href: '/dashboard',
-    requiresAuth: true
-  },
-  {
-    label: 'Networking',
-    icon: <Network className="h-5 w-5" />,
-    href: '/subjects/networking',
-    requiresAuth: true
-  },
-  {
-    label: 'Cloud Computing',
-    icon: <Cloud className="h-5 w-5" />,
-    href: '/subjects/cloud',
-    requiresAuth: true
-  },
-  {
-    label: 'Java Programming',
-    icon: <Code className="h-5 w-5" />,
-    href: '/subjects/java',
-    requiresAuth: true
-  },
-  {
-    label: 'Analytics',
-    icon: <BarChart2 className="h-5 w-5" />,
-    href: '/analytics',
-    requiresAuth: true
-  },
-  {
-    label: 'Quiz',
-    icon: <Brain className="h-5 w-5" />,
-    href: '/quiz',
-    requiresAuth: true
-  },
-  {
-    label: 'Profile',
-    icon: <Users className="h-5 w-5" />,
-    href: '/profile',
-    requiresAuth: true
-  }
-];
-
-export function NavigationLinks() {
-  const location = useLocation();
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-  
-  // Filter items based on authentication status
-  const filteredItems = navigationItems.filter(item => 
-    !item.requiresAuth || (item.requiresAuth && isAuthenticated)
-  );
-  
-  return (
-    <>
-      {filteredItems.map((item) => (
-        <Link
-          key={item.href}
-          to={item.href}
-          className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2 text-base transition-all hover:text-primary",
-            location.pathname === item.href || location.pathname.startsWith(item.href + '/')
-              ? "bg-primary/10 text-primary font-medium"
-              : "text-muted-foreground hover:bg-muted"
-          )}
-        >
-          {item.icon}
-          {item.label}
-        </Link>
-      ))}
-    </>
-  );
-}
+import { useToast } from '@/hooks/use-toast';
+import { useMobile } from '@/hooks/use-mobile';
 
 export function Sidebar() {
-  const isMobile = useIsMobile();
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const location = useLocation();
+  const isMobile = useMobile();
   
-  if (isMobile) {
-    return null;
-  }
-
   const handleLogout = () => {
-    // Clear authentication data
     localStorage.removeItem('isAuthenticated');
-    
+    localStorage.removeItem('onboardingComplete');
     toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account.",
+      title: "Logged out",
+      description: "You have been logged out successfully",
     });
-    
-    // Redirect to home page
-    navigate('/');
+    window.location.href = '/';
   };
-
+  
+  const navItems = [
+    {
+      title: 'Dashboard',
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      href: '/dashboard',
+    },
+    {
+      title: 'Subjects',
+      icon: <BookOpen className="h-5 w-5" />,
+      href: '/subjects',
+    },
+    {
+      title: 'Analytics',
+      icon: <BarChart2 className="h-5 w-5" />,
+      href: '/analytics',
+    },
+    {
+      title: 'Quiz',
+      icon: <Brain className="h-5 w-5" />,
+      href: '/quiz',
+    },
+    {
+      title: 'Java Compiler',
+      icon: <Code className="h-5 w-5" />,
+      href: '/java-compiler',
+    },
+    {
+      title: 'Profile',
+      icon: <User className="h-5 w-5" />,
+      href: '/profile',
+    },
+    {
+      title: 'Settings',
+      icon: <Settings className="h-5 w-5" />,
+      href: '/settings',
+    },
+  ];
+  
   return (
-    <div className="hidden lg:flex flex-col gap-4 border-r h-[calc(100vh-4rem)] w-56 py-6 px-2 bg-sidebar">
-      <div className="px-3 flex items-center gap-2 font-semibold text-xl">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary">
-          <Brain className="h-3 w-3 text-primary-foreground" />
-        </div>
-        <span>SmartStudy</span>
-      </div>
-      
-      <Separator />
-      
-      <nav className="flex flex-col gap-1">
-        <NavigationLinks />
-      </nav>
-      
-      {isAuthenticated && (
-        <div className="mt-auto px-3 flex flex-col gap-3">
-          <Link to="/settings">
-            <Button variant="outline" size="sm" className="justify-start w-full">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </Button>
+    <aside className={cn(
+      "bg-card border-r border-border h-screen flex-shrink-0 overflow-y-auto transition-all",
+      isMobile ? "fixed inset-y-0 left-0 z-50 w-0 group-[.sidebar-open]:w-64" : "sticky top-0 w-64"
+    )}>
+      <div className="py-4 h-full flex flex-col">
+        <div className="px-6 py-2 mb-6">
+          <Link to="/dashboard" className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground font-bold">
+              S
+            </div>
+            <span className="text-xl font-bold">SmartStudy</span>
           </Link>
+        </div>
+        
+        <nav className="flex-1 px-3 space-y-1">
+          {navItems.map((item) => (
+            <Link 
+              key={item.href}
+              to={item.href}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-md transition-colors",
+                location.pathname === item.href
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {item.icon}
+              <span>{item.title}</span>
+            </Link>
+          ))}
+        </nav>
+        
+        <div className="mt-auto px-3 mb-4">
           <Button 
-            variant="ghost" 
-            size="sm" 
-            className="justify-start text-muted-foreground w-full"
+            variant="outline" 
             onClick={handleLogout}
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
           >
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </Button>
         </div>
-      )}
-    </div>
+      </div>
+    </aside>
   );
 }

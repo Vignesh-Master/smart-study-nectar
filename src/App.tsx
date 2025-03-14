@@ -25,6 +25,7 @@ import Terms from "./pages/Terms";
 import Testimonials from "./pages/Testimonials";
 import Contact from "./pages/Contact";
 import JavaCompiler from "./pages/JavaCompiler";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -133,6 +134,13 @@ const App = () => {
                 <ProtectedRoute>
                   <OnboardingRoute>
                     <Profile />
+                  </OnboardingRoute>
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <OnboardingRoute>
+                    <Settings />
                   </OnboardingRoute>
                 </ProtectedRoute>
               } />
