@@ -11,17 +11,14 @@ import {
   Users, 
   BookOpen,
   ArrowRight,
-  ChevronRight,
-  Moon,
-  Sun
+  ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CustomCard } from '@/components/ui/custom-card';
-import { useTheme } from '@/hooks/use-theme';
+import { Header } from '@/components/layout/Header';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useTheme();
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   
   const features = [
@@ -72,6 +69,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header with Hamburger Menu */}
+      <Header />
+      
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 to-background py-20 px-4">
         <div className="absolute right-4 top-4 z-50">

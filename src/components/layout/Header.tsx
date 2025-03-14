@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Search, Menu, X, Sun, Moon, LogOut } from 'lucide-react';
+import { Bell, Search, Menu, X, Sun, Moon, LogOut, Home, Info, Lock, FileText, Star, Wrench, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -32,6 +32,17 @@ export function Header() {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   const userEmail = localStorage.getItem('userEmail') || '';
   const userName = localStorage.getItem('userName') || 'User';
+  
+  // Public navigation links for hamburger menu
+  const publicNavLinks = [
+    { name: 'Home', path: '/', icon: <Home className="h-5 w-5 mr-2" /> },
+    { name: 'About', path: '/about', icon: <Info className="h-5 w-5 mr-2" /> },
+    { name: 'Services', path: '/services', icon: <Wrench className="h-5 w-5 mr-2" /> },
+    { name: 'Testimonials', path: '/testimonials', icon: <Star className="h-5 w-5 mr-2" /> }, 
+    { name: 'Privacy', path: '/privacy', icon: <Lock className="h-5 w-5 mr-2" /> },
+    { name: 'Terms', path: '/terms', icon: <FileText className="h-5 w-5 mr-2" /> },
+    { name: 'Contact', path: '/contact', icon: <Mail className="h-5 w-5 mr-2" /> }
+  ];
   
   // Get user initials for avatar
   const getInitials = () => {
@@ -81,7 +92,7 @@ export function Header() {
       )}
     >
       <div className="flex items-center gap-2 md:gap-4">
-        {isMobile ? (
+        {isMobile && (
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -90,12 +101,27 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-xs">
-              <nav className="flex flex-col gap-4 mt-8">
-                <NavigationLinks />
-              </nav>
+              <div className="flex flex-col gap-4 mt-8">
+                {isAuthenticated ? (
+                  <NavigationLinks />
+                ) : (
+                  <nav className="flex flex-col space-y-1">
+                    {publicNavLinks.map((link) => (
+                      <Link 
+                        key={link.path} 
+                        to={link.path}
+                        className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                      >
+                        {link.icon}
+                        {link.name}
+                      </Link>
+                    ))}
+                  </nav>
+                )}
+              </div>
             </SheetContent>
           </Sheet>
-        ) : null}
+        )}
         
         <div className="font-semibold text-lg hidden md:block">
           {getPageTitle()}
