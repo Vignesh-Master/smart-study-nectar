@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { BarChart2, Book, BookOpen, Brain, Clock, TrendingUp } from 'lucide-react';
 import { StatCard } from '@/components/dashboard/StatCard';
@@ -7,6 +6,7 @@ import { SubjectProgress } from '@/components/dashboard/SubjectProgress';
 import { ResourceCard } from '@/components/recommendations/ResourceCard';
 import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { Footer } from '@/components/layout/Footer';
 import { performanceData, subjectData, resourceData, statsData } from '@/utils/mockData';
 
 const Dashboard = () => {
@@ -26,10 +26,10 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background flex">
       <Sidebar />
       
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <Header />
         
-        <main className="container px-4 py-6 max-w-7xl mx-auto animate-fade-in">
+        <main className="container px-4 py-6 max-w-7xl mx-auto animate-fade-in flex-grow">
           <div className="flex items-start justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold">Welcome back</h1>
@@ -103,6 +103,8 @@ const Dashboard = () => {
             </div>
           </div>
         </main>
+        
+        <Footer />
       </div>
     </div>
   );

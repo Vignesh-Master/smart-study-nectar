@@ -1,14 +1,15 @@
 
 import React from 'react';
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 
 const Terms = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-8 px-4 flex-grow">
         <Breadcrumb className="mb-6">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -111,6 +112,8 @@ const Terms = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };

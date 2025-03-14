@@ -16,10 +16,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { CustomCard } from '@/components/ui/custom-card';
 import { Header } from '@/components/layout/Header';
+import { useTheme } from '@/hooks/use-theme';
+import { Sun, Moon } from 'lucide-react';
 
 const Index = () => {
   const navigate = useNavigate();
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const { theme, toggleTheme } = useTheme();
   
   const features = [
     {
@@ -74,15 +77,7 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-b from-primary/10 to-background py-20 px-4">
-        <div className="absolute right-4 top-4 z-50">
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {theme === 'dark' ? (
-              <Sun className="h-5 w-5" />
-            ) : (
-              <Moon className="h-5 w-5" />
-            )}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
+        <div className="relative right-4 top-4 z-50">
         </div>
         
         <div className="max-w-7xl mx-auto">
@@ -239,25 +234,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Footer */}
-      <footer className="py-10 px-4 border-t">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-2xl font-bold mb-4 md:mb-0">SmartStudy</div>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link>
-              <Link to="/services" className="text-muted-foreground hover:text-foreground">Services</Link>
-              <Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy</Link>
-              <Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms</Link>
-              <Link to="/testimonials" className="text-muted-foreground hover:text-foreground">Testimonials</Link>
-              <Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link>
-            </div>
-          </div>
-          <div className="mt-8 text-center text-muted-foreground text-sm">
-            &copy; {new Date().getFullYear()} SmartStudy. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      {/* Footer is now handled by Footer component */}
     </div>
   );
 };
