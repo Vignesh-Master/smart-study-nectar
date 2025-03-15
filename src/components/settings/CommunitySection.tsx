@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +37,9 @@ import {
   MessageSquare,
   Phone,
   Share2,
-  Inbox
+  Inbox,
+  Paperclip,
+  Send
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
@@ -876,102 +877,3 @@ export const CommunitySection = () => {
                           <Users className="h-4 w-4" /> {community?.members} Members
                         </h3>
                       </div>
-                      
-                      <div className="p-3">
-                        <h4 className="text-xs text-muted-foreground font-medium mb-2">ONLINE—{onlineUsers.filter(u => u.status === 'online' || u.status === 'idle').length}</h4>
-                        <div className="space-y-1">
-                          {onlineUsers.filter(u => u.status === 'online' || u.status === 'idle').map(user => (
-                            <div key={user.id} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted">
-                              <Avatar className="h-7 w-7 relative">
-                                <AvatarImage src={user.avatar} />
-                                <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
-                                <div className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background ${
-                                  user.status === 'online' ? 'bg-green-500' : user.status === 'idle' ? 'bg-yellow-500' : ''
-                                }`}></div>
-                              </Avatar>
-                              <span className="text-sm truncate">{user.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                        
-                        <h4 className="text-xs text-muted-foreground font-medium mt-4 mb-2">OFFLINE—{onlineUsers.filter(u => u.status === 'offline').length}</h4>
-                        <div className="space-y-1">
-                          {onlineUsers.filter(u => u.status === 'offline').map(user => (
-                            <div key={user.id} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted">
-                              <Avatar className="h-7 w-7 relative">
-                                <AvatarImage src={user.avatar} />
-                                <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
-                                <div className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-gray-400 border-2 border-background"></div>
-                              </Avatar>
-                              <span className="text-sm text-muted-foreground truncate">{user.name}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              // No server selected
-              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-                <Users className="h-16 w-16 text-muted-foreground mb-4" />
-                <h3 className="text-xl font-medium mb-2">Select a Community</h3>
-                <p className="text-muted-foreground max-w-md mb-6">
-                  Choose a community from the sidebar to start chatting with fellow students.
-                </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="gap-2">
-                      <PlusCircle className="h-4 w-4" />
-                      Create New Community
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Create New Community</DialogTitle>
-                      <DialogDescription>
-                        Create a community to connect with fellow students studying similar subjects.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleCreateCommunity} className="space-y-4 pt-4">
-                      {/* ... create community form fields (same as above) ... */}
-                      <div className="space-y-2">
-                        <label htmlFor="community-name-modal" className="text-sm font-medium">
-                          Community Name
-                        </label>
-                        <Input id="community-name-modal" placeholder="e.g., Advanced Java Programming" required />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <label htmlFor="community-subject-modal" className="text-sm font-medium">
-                          Related Subject
-                        </label>
-                        <Select>
-                          <SelectTrigger id="community-subject-modal">
-                            <SelectValue placeholder="Select subject" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {subjectData.map(subject => (
-                              <SelectItem key={subject.id} value={subject.id}>
-                                {subject.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      
-                      <DialogFooter>
-                        <Button type="submit">Create Community</Button>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
