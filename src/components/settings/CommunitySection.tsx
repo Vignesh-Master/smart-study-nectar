@@ -162,7 +162,7 @@ const mockMessages = [
       name: 'Jamie Wilson',
       avatar: '/placeholder.svg'
     },
-    content: 'Thanks for sharing! I'll definitely check that out. Anyone want to do a group study session tomorrow?',
+    content: "Thanks for sharing! I'll definitely check that out. Anyone want to do a group study session tomorrow?",
     timestamp: new Date(Date.now() - 5 * 60000),
     reactions: []
   }
