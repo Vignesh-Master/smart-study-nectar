@@ -1,19 +1,16 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { 
-  LayoutDashboard, BookOpen, BarChart2, 
-  Brain, User, Settings, LogOut, Code
-} from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { NavigationLinks } from './NavigationLinks';
 
 export function Sidebar() {
   const { toast } = useToast();
-  const location = useLocation();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -24,44 +21,6 @@ export function Sidebar() {
     });
     window.location.href = '/';
   };
-  
-  const navItems = [
-    {
-      title: 'Dashboard',
-      icon: <LayoutDashboard className="h-5 w-5" />,
-      href: '/dashboard',
-    },
-    {
-      title: 'Subjects',
-      icon: <BookOpen className="h-5 w-5" />,
-      href: '/subjects',
-    },
-    {
-      title: 'Analytics',
-      icon: <BarChart2 className="h-5 w-5" />,
-      href: '/analytics',
-    },
-    {
-      title: 'Quiz',
-      icon: <Brain className="h-5 w-5" />,
-      href: '/quiz',
-    },
-    {
-      title: 'Java Compiler',
-      icon: <Code className="h-5 w-5" />,
-      href: '/java-compiler',
-    },
-    {
-      title: 'Profile',
-      icon: <User className="h-5 w-5" />,
-      href: '/profile',
-    },
-    {
-      title: 'Settings',
-      icon: <Settings className="h-5 w-5" />,
-      href: '/settings',
-    },
-  ];
   
   return (
     <aside className={cn(
@@ -78,23 +37,7 @@ export function Sidebar() {
           </Link>
         </div>
         
-        <nav className="flex-1 px-3 space-y-1">
-          {navItems.map((item) => (
-            <Link 
-              key={item.href}
-              to={item.href}
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-md transition-colors",
-                location.pathname === item.href
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "hover:bg-muted text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {item.icon}
-              <span>{item.title}</span>
-            </Link>
-          ))}
-        </nav>
+        <NavigationLinks />
         
         <div className="mt-auto px-3 mb-4">
           <Button 

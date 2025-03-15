@@ -1,14 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Search, Menu, X, Sun, Moon, LogOut, Home, Info, Lock, FileText, Star, Wrench, Mail } from 'lucide-react';
+import { Bell, Search, Menu, Sun, Moon, LogOut, Home, Info, Lock, FileText, Star, Wrench, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { NavigationLinks } from './Sidebar';
+import { NavigationLinks } from './NavigationLinks';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -28,12 +27,10 @@ export function Header() {
   const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
   
-  // Check if user is authenticated
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   const userEmail = localStorage.getItem('userEmail') || '';
   const userName = localStorage.getItem('userName') || 'User';
   
-  // Public navigation links for hamburger menu
   const publicNavLinks = [
     { name: 'Home', path: '/', icon: <Home className="h-5 w-5 mr-2" /> },
     { name: 'About', path: '/about', icon: <Info className="h-5 w-5 mr-2" /> },
@@ -44,7 +41,6 @@ export function Header() {
     { name: 'Contact', path: '/contact', icon: <Mail className="h-5 w-5 mr-2" /> }
   ];
   
-  // Get user initials for avatar
   const getInitials = () => {
     if (userName === 'User' && userEmail) {
       return userEmail.substring(0, 2).toUpperCase();
@@ -72,7 +68,6 @@ export function Header() {
   };
   
   const handleLogout = () => {
-    // Clear authentication data
     localStorage.removeItem('isAuthenticated');
     
     toast({
@@ -80,7 +75,6 @@ export function Header() {
       description: "You have been logged out of your account.",
     });
     
-    // Redirect to home page
     navigate('/');
   };
 
@@ -129,7 +123,6 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Theme Toggle Button */}
         <Button variant="ghost" size="icon" onClick={toggleTheme} className="relative">
           {theme === 'dark' ? (
             <Sun className="h-5 w-5" />
