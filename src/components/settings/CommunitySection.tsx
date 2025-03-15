@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -877,3 +878,151 @@ export const CommunitySection = () => {
                           <Users className="h-4 w-4" /> {community?.members} Members
                         </h3>
                       </div>
+                      
+                      <div className="p-3">
+                        <h4 className="text-xs font-medium text-muted-foreground mb-2">ONLINE — {onlineUsers.filter(u => u.status === 'online').length}</h4>
+                        <div className="space-y-1">
+                          {onlineUsers
+                            .filter(user => user.status === 'online')
+                            .map(user => (
+                              <div key={user.id} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted">
+                                <Avatar className="h-6 w-6 relative">
+                                  <AvatarImage src={user.avatar} />
+                                  <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
+                                  <div className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-green-500 border-[1px] border-background"></div>
+                                </Avatar>
+                                <span className="text-sm">{user.name}</span>
+                              </div>
+                            ))
+                          }
+                        </div>
+                        
+                        <h4 className="text-xs font-medium text-muted-foreground mt-4 mb-2">IDLE — {onlineUsers.filter(u => u.status === 'idle').length}</h4>
+                        <div className="space-y-1">
+                          {onlineUsers
+                            .filter(user => user.status === 'idle')
+                            .map(user => (
+                              <div key={user.id} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted">
+                                <Avatar className="h-6 w-6 relative">
+                                  <AvatarImage src={user.avatar} />
+                                  <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
+                                  <div className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-yellow-500 border-[1px] border-background"></div>
+                                </Avatar>
+                                <span className="text-sm">{user.name}</span>
+                              </div>
+                            ))
+                          }
+                        </div>
+                        
+                        <h4 className="text-xs font-medium text-muted-foreground mt-4 mb-2">DO NOT DISTURB — {onlineUsers.filter(u => u.status === 'dnd').length}</h4>
+                        <div className="space-y-1">
+                          {onlineUsers
+                            .filter(user => user.status === 'dnd')
+                            .map(user => (
+                              <div key={user.id} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted">
+                                <Avatar className="h-6 w-6 relative">
+                                  <AvatarImage src={user.avatar} />
+                                  <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
+                                  <div className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-red-500 border-[1px] border-background"></div>
+                                </Avatar>
+                                <span className="text-sm">{user.name}</span>
+                              </div>
+                            ))
+                          }
+                        </div>
+                        
+                        <h4 className="text-xs font-medium text-muted-foreground mt-4 mb-2">OFFLINE — {onlineUsers.filter(u => u.status === 'offline').length}</h4>
+                        <div className="space-y-1">
+                          {onlineUsers
+                            .filter(user => user.status === 'offline')
+                            .map(user => (
+                              <div key={user.id} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted">
+                                <Avatar className="h-6 w-6 relative">
+                                  <AvatarImage src={user.avatar} />
+                                  <AvatarFallback>{user.name.substring(0, 2)}</AvatarFallback>
+                                  <div className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-gray-500 border-[1px] border-background"></div>
+                                </Avatar>
+                                <span className="text-sm text-muted-foreground">{user.name}</span>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              // No community selected state
+              <div className="flex flex-col items-center justify-center h-[calc(100vh-12rem)] p-8 text-center">
+                <Users className="h-16 w-16 mb-4 text-muted-foreground" />
+                <h3 className="text-2xl font-medium mb-2">Welcome to Communities</h3>
+                <p className="text-muted-foreground max-w-md mb-6">
+                  Select a community from the sidebar or create a new one to start collaborating with fellow students.
+                </p>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="gap-2">
+                      <PlusCircle className="h-4 w-4" />
+                      Create Community
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Create New Community</DialogTitle>
+                      <DialogDescription>
+                        Create a community to connect with fellow students studying similar subjects.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleCreateCommunity} className="space-y-4 pt-4">
+                      <div className="space-y-2">
+                        <label htmlFor="community-name-2" className="text-sm font-medium">
+                          Community Name
+                        </label>
+                        <Input id="community-name-2" placeholder="e.g., Advanced Java Programming" required />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label htmlFor="community-subject-2" className="text-sm font-medium">
+                          Related Subject
+                        </label>
+                        <Select>
+                          <SelectTrigger id="community-subject-2">
+                            <SelectValue placeholder="Select subject" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {subjectData.map(subject => (
+                              <SelectItem key={subject.id} value={subject.id}>
+                                {subject.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label htmlFor="community-description-2" className="text-sm font-medium">
+                          Description
+                        </label>
+                        <Textarea 
+                          id="community-description-2"
+                          placeholder="Describe what this community is about..."
+                          className="min-h-[100px]"
+                          required
+                        />
+                      </div>
+                      
+                      <DialogFooter>
+                        <Button type="submit">Create Community</Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
