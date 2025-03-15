@@ -8,6 +8,8 @@ import { ThemeProvider } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { Header } from "@/components/layout/Header";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -37,6 +39,17 @@ const PublicLayout = () => {
       <Outlet />
       <Footer />
     </>
+  );
+};
+
+// Layout component with sidebar for authenticated pages
+const AuthenticatedLayout = () => {
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <Outlet />
+      </div>
+    </SidebarProvider>
   );
 };
 
@@ -91,67 +104,71 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               {/* Public routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/testimonials" element={<Testimonials />} />
-              <Route path="/contact" element={<Contact />} />
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/testimonials" element={<Testimonials />} />
+                <Route path="/contact" element={<Contact />} />
+              </Route>
               
               {/* Protected routes with onboarding */}
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <Dashboard />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
-              <Route path="/subjects/*" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <Subjects />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
-              <Route path="/analytics" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <Analytics />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
-              <Route path="/quiz" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <Quiz />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <Profile />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <Settings />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
-              <Route path="/java-compiler" element={
-                <ProtectedRoute>
-                  <OnboardingRoute>
-                    <JavaCompiler />
-                  </OnboardingRoute>
-                </ProtectedRoute>
-              } />
+              <Route element={<AuthenticatedLayout />}>
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <Dashboard />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/subjects/*" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <Subjects />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/analytics" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <Analytics />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/quiz" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <Quiz />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <Profile />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/settings" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <Settings />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+                <Route path="/java-compiler" element={
+                  <ProtectedRoute>
+                    <OnboardingRoute>
+                      <JavaCompiler />
+                    </OnboardingRoute>
+                  </ProtectedRoute>
+                } />
+              </Route>
               
               {/* 404 route */}
               <Route path="*" element={<NotFound />} />

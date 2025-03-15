@@ -45,7 +45,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <>
       <Sidebar />
       <div className="flex-1">
         <Header />
@@ -59,21 +59,21 @@ const Settings = () => {
             </div>
             
             <Tabs defaultValue="account" className="w-full">
-              <TabsList className="grid grid-cols-5 w-full max-w-xl mb-8">
+              <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 w-full max-w-xl mb-8">
                 <TabsTrigger value="account" className="flex gap-2">
-                  <User className="h-4 w-4" /> Account
+                  <User className="h-4 w-4" /> <span className="hidden sm:inline">Account</span>
                 </TabsTrigger>
                 <TabsTrigger value="appearance" className="flex gap-2">
-                  <MoonStar className="h-4 w-4" /> Appearance
+                  <MoonStar className="h-4 w-4" /> <span className="hidden sm:inline">Appearance</span>
                 </TabsTrigger>
                 <TabsTrigger value="notifications" className="flex gap-2">
-                  <Bell className="h-4 w-4" /> Notifications
+                  <Bell className="h-4 w-4" /> <span className="hidden sm:inline">Notifications</span>
                 </TabsTrigger>
                 <TabsTrigger value="privacy" className="flex gap-2">
-                  <Lock className="h-4 w-4" /> Privacy
+                  <Lock className="h-4 w-4" /> <span className="hidden sm:inline">Privacy</span>
                 </TabsTrigger>
                 <TabsTrigger value="community" className="flex gap-2">
-                  <Users className="h-4 w-4" /> Community
+                  <Users className="h-4 w-4" /> <span className="hidden sm:inline">Community</span>
                 </TabsTrigger>
               </TabsList>
               
@@ -250,7 +250,7 @@ const Settings = () => {
           </div>
         </main>
       </div>
-    </div>
+    </>
   );
 };
 

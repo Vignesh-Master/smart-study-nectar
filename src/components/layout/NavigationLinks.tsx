@@ -6,6 +6,7 @@ import {
   LayoutDashboard, BookOpen, BarChart2, 
   Brain, User, Settings, Code
 } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Navigation items that are used in both Sidebar and Header
 export const navItems = [
@@ -46,8 +47,37 @@ export const navItems = [
   },
 ];
 
-export function NavigationLinks() {
+export function NavigationLinks({ collapsed = false }: { collapsed?: boolean }) {
   const location = useLocation();
+  
+  if (collapsed) {
+    return (
+      <TooltipProvider delayDuration={0}>
+        <nav className="flex-1 px-3 space-y-1">
+          {navItems.map((item) => (
+            <Tooltip key={item.href}>
+              <TooltipTrigger asChild>
+                <Link 
+                  to={item.href}
+                  className={cn(
+                    "flex items-center justify-center h-10 w-10 rounded-md transition-colors",
+                    location.pathname === item.href
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {item.icon}
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                {item.title}
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </nav>
+      </TooltipProvider>
+    );
+  }
   
   return (
     <nav className="flex-1 px-3 space-y-1">

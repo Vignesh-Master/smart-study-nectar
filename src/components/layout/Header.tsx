@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Search, Menu, Sun, Moon, LogOut, Home, Info, Lock, FileText, Star, Wrench, Mail } from 'lucide-react';
+import { Bell, Search, Menu, Sun, Moon, LogOut, Home, Info, Lock, FileText, Star, Wrench, Mail, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -64,7 +65,7 @@ export function Header() {
     const path = location.pathname;
     if (path === '/') return 'Home';
     if (path === '/dashboard') return 'Dashboard';
-    return path.substring(1).charAt(0).toUpperCase() + path.substring(2);
+    return path.substring(1).charAt(0).toUpperCase() + path.substring(2).replace(/-/g, ' ');
   };
   
   const handleLogout = () => {
@@ -78,6 +79,13 @@ export function Header() {
     navigate('/');
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  // Check if we're on a route where back button should be shown
+  const showBackButton = isAuthenticated && location.pathname !== '/dashboard';
+
   return (
     <header 
       className={cn(
@@ -86,6 +94,13 @@ export function Header() {
       )}
     >
       <div className="flex items-center gap-2 md:gap-4">
+        {showBackButton && (
+          <Button variant="ghost" size="icon" onClick={handleBack} className="mr-1">
+            <ArrowLeft className="h-5 w-5" />
+            <span className="sr-only">Go back</span>
+          </Button>
+        )}
+
         {isMobile && (
           <Sheet>
             <SheetTrigger asChild>
@@ -95,7 +110,15 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-xs">
-              <div className="flex flex-col gap-4 mt-8">
+              <div className="mt-4 mb-6">
+                <Link to="/dashboard" className="flex items-center gap-2 px-2">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground font-bold">
+                    S
+                  </div>
+                  <span className="text-xl font-bold">SmartStudy</span>
+                </Link>
+              </div>
+              <div className="flex flex-col gap-4">
                 {isAuthenticated ? (
                   <NavigationLinks />
                 ) : (
@@ -117,7 +140,7 @@ export function Header() {
           </Sheet>
         )}
         
-        <div className="font-semibold text-lg hidden md:block">
+        <div className="font-semibold text-lg">
           {getPageTitle()}
         </div>
       </div>
@@ -164,6 +187,9 @@ export function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/settings">Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard">Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
