@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { ThemeProvider } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
 import { Footer } from "@/components/layout/Footer";
+import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -155,6 +156,10 @@ const App = () => {
               {/* 404 route */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            
+            {/* Floating chat button - visible on all pages */}
+            <FloatingChatButton />
+            
           </BrowserRouter>
         </TooltipProvider>
       </ThemeProvider>

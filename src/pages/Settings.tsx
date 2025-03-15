@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
-import { CommunityHub } from '@/components/community/CommunityHub';
+import { CommunitySection } from '@/components/settings/CommunitySection';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Bell, 
@@ -244,7 +244,7 @@ const Settings = () => {
               </TabsContent>
               
               <TabsContent value="community">
-                <CommunityHub />
+                <CommunitySection />
               </TabsContent>
             </Tabs>
           </div>
