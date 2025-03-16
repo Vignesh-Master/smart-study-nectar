@@ -93,7 +93,7 @@ export function Header() {
         scrolled ? "bg-background/80 backdrop-blur-md border-border" : "bg-transparent border-transparent"
       )}
     >
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-4 min-w-[180px]">
         {showBackButton && (
           <Button variant="ghost" size="icon" onClick={handleBack} className="mr-1">
             <ArrowLeft className="h-5 w-5" />
@@ -140,7 +140,7 @@ export function Header() {
           </Sheet>
         )}
         
-        <div className="font-semibold text-lg">
+        <div className="font-semibold text-lg truncate">
           {getPageTitle()}
         </div>
       </div>

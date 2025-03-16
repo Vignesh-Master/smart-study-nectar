@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { NavigationLinks } from './NavigationLinks';
@@ -64,10 +63,10 @@ export function Sidebar() {
           <div className="flex flex-col h-full bg-sidebar">
             <div className="flex items-center h-16 px-4 border-b">
               <Link to="/" className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary">
+                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0">
                   <span className="font-bold text-white">L</span>
                 </div>
-                <span className="font-semibold text-lg">LearnHub</span>
+                {!collapsed && <span className="font-semibold text-lg truncate">LearnHub</span>}
               </Link>
             </div>
             
@@ -79,14 +78,16 @@ export function Sidebar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="w-full gap-3 px-3 justify-start">
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-8 w-8 flex-shrink-0">
                       <AvatarImage src="/placeholder.svg" />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col items-start text-sm">
-                      <span className="font-medium">John Doe</span>
-                      <span className="text-xs text-muted-foreground">Premium</span>
-                    </div>
+                    {!collapsed && (
+                      <div className="flex flex-col items-start text-sm truncate">
+                        <span className="font-medium truncate">John Doe</span>
+                        <span className="text-xs text-muted-foreground truncate">Premium</span>
+                      </div>
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start" className="w-[240px] p-2">
@@ -150,17 +151,17 @@ export function Sidebar() {
       >
         <div className="flex items-center justify-between h-16 px-4 border-b">
           <Link to="/" className={cn("flex items-center gap-3", collapsed && "justify-center")}>
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary">
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0">
               <span className="font-bold text-white">L</span>
             </div>
-            {!collapsed && <span className="font-semibold text-lg">LearnHub</span>}
+            {!collapsed && <span className="font-semibold text-lg truncate">LearnHub</span>}
           </Link>
           {!collapsed && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setCollapsed(true)}
-              className="h-8 w-8"
+              className="h-8 w-8 flex-shrink-0"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -181,14 +182,14 @@ export function Sidebar() {
                   collapsed && "justify-center px-0"
                 )}
               >
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 flex-shrink-0">
                   <AvatarImage src="/placeholder.svg" />
                   <AvatarFallback>JD</AvatarFallback>
                 </Avatar>
                 {!collapsed && (
-                  <div className="flex flex-col items-start text-sm">
-                    <span className="font-medium">John Doe</span>
-                    <span className="text-xs text-muted-foreground">Premium</span>
+                  <div className="flex flex-col items-start text-sm truncate">
+                    <span className="font-medium truncate">John Doe</span>
+                    <span className="text-xs text-muted-foreground truncate">Premium</span>
                   </div>
                 )}
               </Button>
