@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   LayoutDashboard, BookOpen, BarChart2, 
-  Brain, User, Settings, Code
+  Brain, User, Settings, Code, ChevronRight
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -80,7 +80,7 @@ export function NavigationLinks({ collapsed = false }: { collapsed?: boolean }) 
   }
   
   return (
-    <nav className="flex flex-col space-y-1 px-3">
+    <nav className="flex flex-col space-y-1 px-3 w-full">
       {navItems.map((item) => (
         <Link 
           key={item.href}
