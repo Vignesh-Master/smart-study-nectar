@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { NavigationLinks } from './NavigationLinks';
@@ -66,7 +67,7 @@ export function Sidebar() {
                 <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0">
                   <span className="font-bold text-white">L</span>
                 </div>
-                {!collapsed && <span className="font-semibold text-lg truncate">LearnHub</span>}
+                <span className="font-semibold text-lg truncate">LearnHub</span>
               </Link>
             </div>
             
@@ -82,12 +83,10 @@ export function Sidebar() {
                       <AvatarImage src="/placeholder.svg" />
                       <AvatarFallback>JD</AvatarFallback>
                     </Avatar>
-                    {!collapsed && (
-                      <div className="flex flex-col items-start text-sm truncate">
-                        <span className="font-medium truncate">John Doe</span>
-                        <span className="text-xs text-muted-foreground truncate">Premium</span>
-                      </div>
-                    )}
+                    <div className="flex flex-col items-start text-sm truncate">
+                      <span className="font-medium truncate">John Doe</span>
+                      <span className="text-xs text-muted-foreground truncate">Premium</span>
+                    </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top" align="start" className="w-[240px] p-2">
@@ -148,6 +147,7 @@ export function Sidebar() {
           "flex flex-col bg-sidebar border-r h-full transition-all duration-300 ease-in-out shadow-md",
           collapsed ? "w-[70px]" : "w-[240px]"
         )}
+        style={{ position: 'fixed', zIndex: 40 }}
       >
         <div className="flex items-center justify-between h-16 px-4 border-b">
           <Link to="/" className={cn("flex items-center gap-3", collapsed && "justify-center")}>
