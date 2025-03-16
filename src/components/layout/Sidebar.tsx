@@ -42,7 +42,7 @@ export function Sidebar() {
         collapsed ? "w-[70px]" : "w-[240px]"
       )}
     >
-      <div className="flex items-center justify-between h-16 px-3 border-b">
+      <div className="flex items-center justify-between h-16 px-4 border-b">
         <Link to="/" className={cn("flex items-center gap-3", collapsed && "justify-center")}>
           <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary">
             <span className="font-bold text-white">L</span>
@@ -59,17 +59,17 @@ export function Sidebar() {
         </Button>
       </div>
       
-      <div className="flex-1 overflow-auto py-3">
+      <div className="flex-1 overflow-auto py-4">
         <NavigationLinks collapsed={collapsed} />
       </div>
       
-      <div className="p-3 border-t">
+      <div className="p-4 mt-auto border-t">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button 
               variant="ghost" 
               className={cn(
-                "w-full gap-3 px-3 h-12 justify-start",
+                "w-full gap-3 px-3 justify-start",
                 collapsed && "justify-center px-0"
               )}
             >

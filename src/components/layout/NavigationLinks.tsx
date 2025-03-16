@@ -53,7 +53,7 @@ export function NavigationLinks({ collapsed = false }: { collapsed?: boolean }) 
   if (collapsed) {
     return (
       <TooltipProvider delayDuration={0}>
-        <nav className="flex-1 px-3 space-y-1">
+        <nav className="flex flex-col items-center space-y-3 px-2">
           {navItems.map((item) => (
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
@@ -80,20 +80,20 @@ export function NavigationLinks({ collapsed = false }: { collapsed?: boolean }) 
   }
   
   return (
-    <nav className="flex-1 px-3 space-y-1">
+    <nav className="flex flex-col space-y-1 px-3">
       {navItems.map((item) => (
         <Link 
           key={item.href}
           to={item.href}
           className={cn(
-            "flex items-center gap-2 px-3 py-2 rounded-md transition-colors",
+            "flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors",
             location.pathname === item.href
               ? "bg-primary/10 text-primary font-medium"
               : "hover:bg-muted text-muted-foreground hover:text-foreground"
           )}
         >
-          {item.icon}
-          <span>{item.title}</span>
+          <span className="flex-shrink-0">{item.icon}</span>
+          <span className="truncate">{item.title}</span>
         </Link>
       ))}
     </nav>
