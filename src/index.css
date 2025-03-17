@@ -157,6 +157,14 @@
   .sidebar-collapsed-content {
     @apply ml-[70px];
   }
+  
+  .mobile-content {
+    @apply px-3 py-4 sm:px-4;
+  }
+  
+  .mobile-menu-item {
+    @apply py-3 px-4 text-base flex items-center gap-3;
+  }
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -234,4 +242,17 @@
 /* Gradient text */
 .gradient-text {
   @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+}
+
+/* Mobile layout fixes */
+@media (max-width: 768px) {
+  .mobile-content-fix {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    width: 100%;
+  }
+  
+  h1, h2, h3 {
+    word-break: break-word;
+  }
 }

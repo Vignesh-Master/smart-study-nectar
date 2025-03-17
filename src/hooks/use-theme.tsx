@@ -35,6 +35,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Add a theme-transition class to body for smooth transitions
     document.body.classList.add('theme-transition');
+    
+    // Apply additional theme-specific styles if needed
+    document.documentElement.style.colorScheme = theme;
   }, [theme]);
 
   // Listen for system preference changes
@@ -47,8 +50,14 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     };
     
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    try {
+      // Modern browsers
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    } catch (e) {
+      // Fallback for older browsers
+      console.warn('MediaQueryList.addEventListener not supported', e);
+    }
   }, []);
 
   const toggleTheme = () => {

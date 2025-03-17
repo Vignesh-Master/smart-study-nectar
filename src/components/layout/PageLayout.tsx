@@ -25,15 +25,17 @@ export function PageLayout({
       
       <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-[70px]">
         <Header />
-        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-          <main className={className}>
+        <div className="w-full mx-auto px-2 sm:px-4 lg:px-6 max-w-6xl">
+          <main className={`${className} mt-4 md:mt-6`}>
             {(title || description) && (
-              <div className="mb-8 mt-4">
-                {title && <h1 className="text-3xl font-bold">{title}</h1>}
+              <div className="mb-6 md:mb-8">
+                {title && <h1 className="text-2xl md:text-3xl font-bold break-words">{title}</h1>}
                 {description && <p className="text-muted-foreground mt-2">{description}</p>}
               </div>
             )}
-            {children}
+            <div className="animate-fade-in">
+              {children}
+            </div>
           </main>
         </div>
       </div>
