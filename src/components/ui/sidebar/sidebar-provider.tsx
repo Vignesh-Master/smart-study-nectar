@@ -1,7 +1,6 @@
 
 import * as React from "react";
 import { useState, useEffect, createContext, useContext, useCallback } from "react";
-import { useCookies } from "next-cookies";
 import { useMediaQuery } from "react-responsive";
 import { 
   SIDEBAR_COOKIE_NAME, 
@@ -43,15 +42,24 @@ export function SidebarProvider({
 }) {
   // Check if the user is on a mobile device
   const isMobile = useMediaQuery({ maxWidth: 768 });
-  const [cookies, setCookie] = useCookies();
+  
+  // Use localStorage instead of cookies for state persistence
+  const getStoredState = (): "expanded" | "collapsed" => {
+    try {
+      const storedState = localStorage.getItem(SIDEBAR_COOKIE_NAME);
+      return storedState === "collapsed" ? "collapsed" : "expanded";
+    } catch (e) {
+      return "expanded";
+    }
+  };
 
-  // Get the initial state from cookies or props
-  const initialState = cookies?.[SIDEBAR_COOKIE_NAME] === "collapsed" ? "collapsed" : "expanded";
+  // Get the initial state from localStorage or props
+  const initialState = open !== undefined 
+    ? (open ? "expanded" : "collapsed") 
+    : getStoredState();
   
   // State for the sidebar
-  const [state, setState] = useState<"expanded" | "collapsed">(
-    open !== undefined ? (open ? "expanded" : "collapsed") : initialState
-  );
+  const [state, setState] = useState<"expanded" | "collapsed">(initialState);
   const [openMobile, setOpenMobile] = useState(false);
 
   // Create a handler for toggling the sidebar
@@ -63,13 +71,14 @@ export function SidebarProvider({
 
     setState((prevState) => {
       const newState = prevState === "expanded" ? "collapsed" : "expanded";
-      setCookie(SIDEBAR_COOKIE_NAME, newState, {
-        maxAge: SIDEBAR_COOKIE_MAX_AGE,
-        path: "/",
-      });
+      try {
+        localStorage.setItem(SIDEBAR_COOKIE_NAME, newState);
+      } catch (e) {
+        console.error("Failed to save sidebar state to localStorage", e);
+      }
       return newState;
     });
-  }, [open, onOpenChange, setCookie]);
+  }, [open, onOpenChange]);
 
   // Set up keyboard shortcuts for toggling the sidebar
   useEffect(() => {
@@ -93,8 +102,17 @@ export function SidebarProvider({
 
   // Close mobile sidebar when navigating to a new route
   useEffect(() => {
-    setOpenMobile(false);
-  }, [window.location.pathname]);
+    const handleRouteChange = () => {
+      setOpenMobile(false);
+    };
+    
+    // Listen for history changes
+    window.addEventListener('popstate', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, []);
 
   // If we're on mobile and the sidebar is open, add a class to the body
   useEffect(() => {
@@ -112,14 +130,15 @@ export function SidebarProvider({
         return;
       }
       setState(value ? "expanded" : "collapsed");
-      setCookie(SIDEBAR_COOKIE_NAME, value ? "expanded" : "collapsed", {
-        maxAge: SIDEBAR_COOKIE_MAX_AGE,
-        path: "/",
-      });
+      try {
+        localStorage.setItem(SIDEBAR_COOKIE_NAME, value ? "expanded" : "collapsed");
+      } catch (e) {
+        console.error("Failed to save sidebar state to localStorage", e);
+      }
     },
     openMobile,
     setOpenMobile,
-    isMobile,
+    isMobile: !!isMobile, // Ensure it's a boolean
     toggleSidebar,
   };
 
@@ -133,35 +152,4 @@ export function SidebarProvider({
       />
     </SidebarContext.Provider>
   );
-}
-
-// Define a custom hook to get cookies
-function useCookies() {
-  const [cookies, setCookie] = useState<Record<string, string>>({});
-
-  const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift();
-    return undefined;
-  };
-
-  useEffect(() => {
-    // Initialize cookies
-    const sidebarState = getCookie(SIDEBAR_COOKIE_NAME);
-    if (sidebarState) {
-      setCookie((prev) => ({ ...prev, [SIDEBAR_COOKIE_NAME]: sidebarState }));
-    }
-  }, []);
-
-  const setNewCookie = (
-    name: string,
-    value: string,
-    options: { maxAge: number; path: string }
-  ) => {
-    document.cookie = `${name}=${value}; max-age=${options.maxAge}; path=${options.path}`;
-    setCookie((prev) => ({ ...prev, [name]: value }));
-  };
-
-  return [cookies, setNewCookie] as const;
 }
