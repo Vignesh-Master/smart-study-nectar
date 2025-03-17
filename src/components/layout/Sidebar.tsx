@@ -52,88 +52,9 @@ export function Sidebar() {
     };
   }, [hoverTimeout]);
   
+  // For mobile, we use a sheet instead of the sidebar
   if (isMobile) {
-    return (
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="fixed left-4 top-4 z-50">
-            <Menu className="h-5 w-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="p-0">
-          <div className="flex flex-col h-full bg-sidebar">
-            <div className="flex items-center h-16 px-4 border-b">
-              <Link to="/" className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0">
-                  <span className="font-bold text-white">L</span>
-                </div>
-                <span className="font-semibold text-lg truncate">LearnHub</span>
-              </Link>
-            </div>
-            
-            <div className="flex-1 overflow-auto py-4">
-              <NavigationLinks collapsed={false} />
-            </div>
-            
-            <div className="p-4 mt-auto border-t">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="w-full gap-3 px-3 justify-start">
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                      <AvatarImage src="/placeholder.svg" />
-                      <AvatarFallback>JD</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col items-start text-sm truncate">
-                      <span className="font-medium truncate">John Doe</span>
-                      <span className="text-xs text-muted-foreground truncate">Premium</span>
-                    </div>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent side="top" align="start" className="w-[240px] p-2">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium">John Doe</p>
-                      <p className="text-xs text-muted-foreground">johndoe@example.com</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="flex items-center cursor-pointer">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/settings" className="flex items-center cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
-                    {theme === "dark" ? (
-                      <>
-                        <Sun className="mr-2 h-4 w-4" />
-                        <span>Light Mode</span>
-                      </>
-                    ) : (
-                      <>
-                        <Moon className="mr-2 h-4 w-4" />
-                        <span>Dark Mode</span>
-                      </>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive focus:text-destructive">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log Out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-    );
+    return null; // We'll use Header's mobile menu instead
   }
 
   return (
@@ -178,8 +99,8 @@ export function Sidebar() {
               <Button 
                 variant="ghost" 
                 className={cn(
-                  "w-full gap-3 px-3 justify-start",
-                  collapsed && "justify-center px-0"
+                  "w-full gap-3 px-3",
+                  collapsed ? "justify-center px-0" : "justify-start"
                 )}
               >
                 <Avatar className="h-8 w-8 flex-shrink-0">

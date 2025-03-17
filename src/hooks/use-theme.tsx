@@ -32,6 +32,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       document.documentElement.classList.remove('dark');
     }
+    
+    // Add a theme-transition class to body for smooth transitions
+    document.body.classList.add('theme-transition');
   }, [theme]);
 
   // Listen for system preference changes

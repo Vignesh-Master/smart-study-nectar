@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Bell, Search, Menu, Sun, Moon, LogOut, Home, Info, Lock, FileText, Star, Wrench, Mail, ArrowLeft } from 'lucide-react';
@@ -109,32 +108,55 @@ export function Header() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs">
-              <div className="mt-4 mb-6">
-                <Link to="/dashboard" className="flex items-center gap-2 px-2">
-                  <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground font-bold">
-                    S
-                  </div>
-                  <span className="text-xl font-bold">SmartStudy</span>
-                </Link>
-              </div>
-              <div className="flex flex-col gap-4">
-                {isAuthenticated ? (
-                  <NavigationLinks />
-                ) : (
-                  <nav className="flex flex-col space-y-1">
-                    {publicNavLinks.map((link) => (
-                      <Link 
-                        key={link.path} 
-                        to={link.path}
-                        className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
-                      >
-                        {link.icon}
-                        {link.name}
-                      </Link>
-                    ))}
-                  </nav>
-                )}
+            <SheetContent side="left" className="sm:max-w-xs p-0">
+              <div className="flex flex-col h-full bg-sidebar">
+                <div className="flex items-center h-16 px-4 border-b">
+                  <Link to="/" className="flex items-center gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0">
+                      <span className="font-bold text-white">L</span>
+                    </div>
+                    <span className="font-semibold text-lg truncate">LearnHub</span>
+                  </Link>
+                </div>
+                
+                <div className="flex-1 overflow-auto py-4">
+                  {isAuthenticated ? (
+                    <NavigationLinks collapsed={false} />
+                  ) : (
+                    <nav className="flex flex-col space-y-1">
+                      {publicNavLinks.map((link) => (
+                        <Link 
+                          key={link.path} 
+                          to={link.path}
+                          className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                        >
+                          {link.icon}
+                          {link.name}
+                        </Link>
+                      ))}
+                    </nav>
+                  )}
+                </div>
+                
+                <div className="p-4 mt-auto border-t">
+                  <Button 
+                    variant="ghost" 
+                    onClick={toggleTheme} 
+                    className="flex items-center justify-start w-full gap-3 px-3"
+                  >
+                    {theme === 'dark' ? (
+                      <>
+                        <Sun className="h-5 w-5" />
+                        <span>Light Mode</span>
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="h-5 w-5" />
+                        <span>Dark Mode</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

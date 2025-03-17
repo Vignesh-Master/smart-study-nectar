@@ -23,7 +23,7 @@ export function PageLayout({
     <div className="flex min-h-screen bg-background">
       <Sidebar />
       
-      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-[70px] md:ml-[70px]">
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-[70px]">
         <Header />
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <main className={className}>
