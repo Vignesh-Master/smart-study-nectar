@@ -1,50 +1,51 @@
 
-import * as React from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import React, { ReactNode } from 'react';
+import { Card, CardProps } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 
-interface CustomCardProps {
-  className?: string;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  children?: React.ReactNode;
-  footer?: React.ReactNode;
+export interface CustomCardProps extends CardProps {
+  children: ReactNode;
   glassmorphism?: boolean;
-  hover?: boolean;
-  animation?: 'none' | 'float' | 'slide-up' | 'fade-in';
-  style?: React.CSSProperties;
+  withHover?: boolean;
+  title?: string;
+  description?: string;
+  icon?: React.ReactNode;
 }
 
 export function CustomCard({
+  children,
   className,
+  glassmorphism = false,
+  withHover = false,
   title,
   description,
-  children,
-  footer,
-  glassmorphism = false,
-  hover = true,
-  animation = 'none',
-  style,
+  icon,
+  ...props
 }: CustomCardProps) {
-  const cardClasses = cn(
-    glassmorphism ? "bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg border border-white/20 dark:border-gray-800/30" : "",
-    hover ? "transition-all duration-300 hover:shadow-lg hover:translate-y-[-2px]" : "",
-    animation === 'float' ? "animate-float" : 
-    animation === 'slide-up' ? "animate-slide-up" : 
-    animation === 'fade-in' ? "animate-fade-in" : "",
-    className
-  );
-
   return (
-    <Card className={cardClasses} style={style}>
-      {(title || description) && (
-        <CardHeader>
-          {title && <CardTitle>{title}</CardTitle>}
-          {description && <CardDescription>{description}</CardDescription>}
-        </CardHeader>
+    <Card
+      className={cn(
+        "border",
+        glassmorphism && "bg-card/30 backdrop-blur-md border-muted/20",
+        withHover && "transition-all duration-200 hover:shadow-lg hover:border-primary/50",
+        className
       )}
-      {children && <CardContent>{children}</CardContent>}
-      {footer && <CardFooter>{footer}</CardFooter>}
+      {...props}
+    >
+      {(title || description || icon) && (
+        <div className="flex items-start gap-4 mb-4">
+          {icon && (
+            <div className="flex-shrink-0 p-2 bg-primary/10 rounded-full text-primary">
+              {icon}
+            </div>
+          )}
+          <div>
+            {title && <h3 className="text-lg font-semibold">{title}</h3>}
+            {description && <p className="text-muted-foreground text-sm">{description}</p>}
+          </div>
+        </div>
+      )}
+      {children}
     </Card>
   );
 }

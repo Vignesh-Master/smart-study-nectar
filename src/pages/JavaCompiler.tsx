@@ -189,7 +189,7 @@ class Main {
         </div>
 
         <ResizablePanelGroup direction="horizontal" className="min-h-[600px] rounded-b-md border">
-          <ResizablePanel defaultSize={70} minSize={30}>
+          <ResizablePanel defaultSize={50} minSize={30}>
             <div className="h-full flex">
               <div className="bg-muted p-2 text-right text-sm text-muted-foreground select-none border-r">
                 {lineNumbers.map(num => (
@@ -208,7 +208,7 @@ class Main {
           
           <ResizableHandle withHandle />
           
-          <ResizablePanel defaultSize={30} minSize={20}>
+          <ResizablePanel defaultSize={50} minSize={20}>
             <div className="h-full flex flex-col">
               <div className="bg-muted p-2 border-b flex items-center justify-between">
                 <h3 className="text-sm font-medium">Output</h3>

@@ -68,7 +68,7 @@ export function PageLayout({
     <div className="flex min-h-screen bg-background">
       <Sidebar />
       
-      <div className="flex-1 flex flex-col ml-[240px] transition-all duration-300">
+      <div className="flex-1 flex flex-col ml-[240px]">
         <Header />
         <motion.div 
           className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"
