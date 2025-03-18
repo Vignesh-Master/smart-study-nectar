@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { NavigationLinks } from './NavigationLinks';
@@ -11,7 +10,6 @@ import {
   User, 
   Moon, 
   Sun,
-  Menu,
   ChevronLeft
 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
@@ -27,30 +25,17 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
   const { theme, setTheme } = useTheme();
   
-  // Handle hover events for desktop sidebar
-  const handleMouseEnter = () => {
-    if (hoverTimeout) clearTimeout(hoverTimeout);
-    setCollapsed(false);
-  };
-  
-  const handleMouseLeave = () => {
-    const timeout = setTimeout(() => {
-      setCollapsed(true);
-    }, 300); // Slight delay before collapsing
-    setHoverTimeout(timeout);
-  };
-  
-  // Cleanup on unmount
+  // We'll keep the sidebar expanded by default for desktop
   useEffect(() => {
-    return () => {
-      if (hoverTimeout) clearTimeout(hoverTimeout);
-    };
-  }, [hoverTimeout]);
+    if (!isMobile) {
+      setCollapsed(false);
+    }
+  }, [isMobile]);
   
   // For mobile, we use a sheet instead of the sidebar
   if (isMobile) {
@@ -58,11 +43,7 @@ export function Sidebar() {
   }
 
   return (
-    <div 
-      className="fixed inset-y-0 left-0 z-30" 
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="fixed inset-y-0 left-0 z-30">
       <div
         className={cn(
           "flex flex-col bg-sidebar border-r h-full transition-all duration-300 ease-in-out shadow-md",
@@ -72,7 +53,7 @@ export function Sidebar() {
       >
         <div className="flex items-center justify-between h-16 px-4 border-b">
           <Link to="/" className={cn("flex items-center gap-3", collapsed && "justify-center")}>
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0">
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0 animate-pulse-subtle">
               <span className="font-bold text-white">L</span>
             </div>
             {!collapsed && <span className="font-semibold text-lg truncate">LearnHub</span>}
@@ -103,7 +84,7 @@ export function Sidebar() {
                   collapsed ? "justify-center px-0" : "justify-start"
                 )}
               >
-                <Avatar className="h-8 w-8 flex-shrink-0">
+                <Avatar className="h-8 w-8 flex-shrink-0 animate-float">
                   <AvatarImage src="/placeholder.svg" />
                   <AvatarFallback>JD</AvatarFallback>
                 </Avatar>

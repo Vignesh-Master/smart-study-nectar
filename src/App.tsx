@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Header } from "@/components/layout/Header";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
