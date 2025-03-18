@@ -1,15 +1,17 @@
 
 import React, { ReactNode } from 'react';
-import { Card, CardProps } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
-export interface CustomCardProps extends CardProps {
+export interface CustomCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
   children: ReactNode;
   glassmorphism?: boolean;
   withHover?: boolean;
+  hover?: boolean; // alias for withHover for backward compatibility
   title?: string;
   description?: string;
   icon?: React.ReactNode;
+  animation?: string;
 }
 
 export function CustomCard({
@@ -17,17 +19,23 @@ export function CustomCard({
   className,
   glassmorphism = false,
   withHover = false,
+  hover, // for backward compatibility
   title,
   description,
   icon,
+  animation,
   ...props
 }: CustomCardProps) {
+  // Use either withHover or hover prop (for backward compatibility)
+  const shouldHover = withHover || hover;
+  
   return (
     <Card
       className={cn(
         "border",
         glassmorphism && "bg-card/30 backdrop-blur-md border-muted/20",
-        withHover && "transition-all duration-200 hover:shadow-lg hover:border-primary/50",
+        shouldHover && "transition-all duration-200 hover:shadow-lg hover:border-primary/50",
+        animation && animation,
         className
       )}
       {...props}

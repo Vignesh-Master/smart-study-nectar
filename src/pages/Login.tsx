@@ -9,6 +9,7 @@ import { CustomCard } from '@/components/ui/custom-card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,35 +20,37 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Mock authentication - in a real app, this would call an API
-    setTimeout(() => {
-      // For demo purposes, we'll just simulate a successful login
-      if (email && password) {
-        // Store a token or user info in localStorage to simulate authentication
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', email);
-        
-        toast({
-          title: "Login successful!",
-          description: "Welcome back to SmartStudy.",
-        });
-        
-        // Redirect to dashboard
-        navigate('/dashboard');
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login failed",
-          description: "Please check your email and password.",
-        });
+    try {
+      // Sign in with Supabase
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        throw error;
       }
       
+      toast({
+        title: "Login successful!",
+        description: "Welcome back to SmartStudy.",
+      });
+      
+      // Redirect to dashboard
+      navigate('/dashboard');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: error.message || "Please check your email and password.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (

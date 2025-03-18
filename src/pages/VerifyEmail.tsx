@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Brain, ArrowLeft, CheckCircle } from 'lucide-react';
 import { CustomButton } from '@/components/ui/custom-button';
 import { CustomCard } from '@/components/ui/custom-card';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const VerifyEmail = () => {
   const navigate = useNavigate();
@@ -25,32 +25,83 @@ const VerifyEmail = () => {
     return () => clearTimeout(timer);
   }, [countdown, isVerified]);
 
-  const handleResendCode = () => {
+  // Check for verification in URL params (if user clicked email link)
+  useEffect(() => {
+    const handleVerificationFromURL = async () => {
+      const url = new URL(window.location.href);
+      const token = url.searchParams.get('token');
+      const type = url.searchParams.get('type');
+      
+      if (token && type === 'signup') {
+        try {
+          // Attempt to verify the token
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: 'signup',
+          });
+          
+          if (error) {
+            throw error;
+          }
+          
+          setIsVerified(true);
+          toast({
+            title: "Email verified!",
+            description: "Your account has been successfully verified.",
+          });
+          
+          // After a delay, navigate to the login page
+          setTimeout(() => {
+            navigate('/login');
+          }, 3000);
+        } catch (error: any) {
+          toast({
+            variant: "destructive",
+            title: "Verification failed",
+            description: error.message || "Could not verify your email. Please try again.",
+          });
+        }
+      }
+    };
+    
+    handleVerificationFromURL();
+  }, [navigate, toast]);
+
+  const handleResendCode = async () => {
     setIsResending(true);
     
-    // Mock API call to resend verification code
-    setTimeout(() => {
+    try {
+      // Resend verification email
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
       toast({
         title: "Verification code sent!",
         description: "A new verification code has been sent to your email.",
       });
-      setIsResending(false);
       setCountdown(60);
-    }, 1500);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to resend code",
+        description: error.message || "An error occurred. Please try again later.",
+      });
+    } finally {
+      setIsResending(false);
+    }
   };
 
-  const handleVerification = () => {
-    // For demo purposes, we'll just simulate verification
+  const handleVerification = async () => {
     toast({
-      title: "Email verified!",
-      description: "Your account has been successfully verified.",
+      title: "Please check your email",
+      description: "Click the link in your email to verify your account.",
     });
-    setIsVerified(true);
-    
-    // After a delay, navigate to the login page
-    setTimeout(() => {
-      navigate('/login');
-    }, 3000);
   };
 
   return (

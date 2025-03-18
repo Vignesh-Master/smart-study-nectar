@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from '@/hooks/use-theme';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,9 +28,30 @@ export function Header() {
   const { theme, toggleTheme } = useTheme();
   const { toast } = useToast();
   
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-  const userEmail = localStorage.getItem('userEmail') || '';
-  const userName = localStorage.getItem('userName') || 'User';
+  const [user, setUser] = useState<any>(null);
+  
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user || null);
+    };
+    
+    checkAuth();
+    
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+      }
+    );
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+  
+  const isAuthenticated = !!user;
+  const userEmail = user?.email || '';
+  const userName = user?.user_metadata?.full_name || 'User';
   
   const publicNavLinks = [
     { name: 'Home', path: '/', icon: <Home className="h-5 w-5 mr-2" /> },
@@ -67,22 +89,33 @@ export function Header() {
     return path.substring(1).charAt(0).toUpperCase() + path.substring(2).replace(/-/g, ' ');
   };
   
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    
-    toast({
-      title: "Logged out successfully",
-      description: "You have been logged out of your account.",
-    });
-    
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        throw error;
+      }
+      
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account.",
+      });
+      
+      navigate('/');
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Logout failed",
+        description: error.message || "An error occurred during logout.",
+      });
+    }
   };
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  // Check if we're on a route where back button should be shown
   const showBackButton = isAuthenticated && location.pathname !== '/dashboard';
 
   return (

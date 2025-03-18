@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingChatButton } from "@/components/chat/FloatingChatButton";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { supabase } from "@/integrations/supabase/client";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -52,11 +53,57 @@ const AuthenticatedLayout = () => {
   );
 };
 
+// Auth callback handler component
+const AuthCallback = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Process the OAuth or email verification callback
+    const { hash, search } = window.location;
+    
+    if (hash || search) {
+      // The callback handling is automatic
+      // We just need to redirect after it's processed
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+  
+  return null; // This component doesn't render anything
+};
+
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   
-  if (!isAuthenticated) {
+  useEffect(() => {
+    // Check current auth status
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data.session?.user || null);
+      setLoading(false);
+    };
+    
+    checkAuth();
+    
+    // Listen for auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+        setLoading(false);
+      }
+    );
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+  
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+  
+  if (!user) {
     return <Navigate to="/login" />;
   }
   
@@ -65,12 +112,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Onboarding route component
 const OnboardingRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
   
   if (!onboardingComplete) {
     return <SubjectSelection />;
@@ -83,15 +125,17 @@ const App = () => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Simulate checking if user is authenticated from a backend
-    // In a real app, this would be an API call
-    setTimeout(() => {
+    // Check if we have a session to determine if the app is ready
+    const checkSession = async () => {
+      await supabase.auth.getSession();
       setIsReady(true);
-    }, 500);
+    };
+    
+    checkSession();
   }, []);
 
   if (!isReady) {
-    return null; // or a loading spinner
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   return (
@@ -108,6 +152,7 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/privacy" element={<Privacy />} />

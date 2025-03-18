@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Brain, ArrowLeft, CheckCircle } from 'lucide-react';
@@ -9,6 +8,7 @@ import { CustomCard } from '@/components/ui/custom-card';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ const Signup = () => {
 
   const passwordsMatch = password === confirmPassword && password !== '';
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!passwordsMatch) {
@@ -84,30 +84,40 @@ const Signup = () => {
     
     setIsLoading(true);
     
-    // Mock registration - in a real app, this would call an API
-    setTimeout(() => {
-      if (email && password) {
-        // In a real app, this would store the user in a database
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', name);
-        
-        toast({
-          title: "Account created!",
-          description: "Please verify your email to continue.",
-        });
-        
-        // Redirect to verify email page
-        navigate('/verify-email', { state: { email } });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Signup failed",
-          description: "Please fill out all required fields.",
-        });
+    try {
+      // Sign up with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) {
+        throw error;
       }
       
+      toast({
+        title: "Account created!",
+        description: "Please check your email to verify your account.",
+      });
+      
+      // Store email for verification page
+      navigate('/verify-email', { state: { email } });
+      
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Signup failed",
+        description: error.message || "An error occurred during signup.",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
