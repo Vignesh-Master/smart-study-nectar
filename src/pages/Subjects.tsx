@@ -1,7 +1,5 @@
-
 import React, { useState } from 'react';
-import { Header } from '@/components/layout/Header';
-import { Sidebar } from '@/components/layout/Sidebar';
+import { PageLayout } from '@/components/layout/PageLayout';
 import { CustomCard } from '@/components/ui/custom-card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -20,49 +18,41 @@ const Subjects = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <Sidebar />
-      
-      <div className="flex-1">
-        <Header />
+    <PageLayout 
+      title="Subjects"
+      description="Track your progress across different subjects"
+    >
+      <div className="w-full">
+        <div className="flex justify-end mb-6">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search subjects..."
+              className="pl-8 w-full md:w-[250px]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
         
-        <main className="container px-4 py-6 max-w-7xl mx-auto animate-fade-in">
-          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-            <div>
-              <h1 className="text-3xl font-bold">Subjects</h1>
-              <p className="text-muted-foreground">Track your progress across different subjects</p>
-            </div>
-            
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search subjects..."
-                className="pl-8 w-full md:w-[250px]"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredSubjects.map((subject) => (
+            <SubjectCard key={subject.id} subject={subject} />
+          ))}
           
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredSubjects.map((subject) => (
-              <SubjectCard key={subject.id} subject={subject} />
-            ))}
-            
-            {filteredSubjects.length === 0 && (
-              <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium">No subjects found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search criteria
-                </p>
-              </div>
-            )}
-          </div>
-        </main>
+          {filteredSubjects.length === 0 && (
+            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+              <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium">No subjects found</h3>
+              <p className="text-muted-foreground">
+                Try adjusting your search criteria
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
 

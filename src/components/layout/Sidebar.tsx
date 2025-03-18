@@ -62,14 +62,13 @@ export function Sidebar() {
 
   return (
     <motion.div 
-      className="fixed inset-y-0 left-0 z-30"
+      className="fixed inset-y-0 left-0 z-30 w-[240px]"
       initial="hidden"
       animate="visible"
       variants={sidebarVariants}
     >
       <div
         className="flex flex-col bg-sidebar border-r h-full w-[240px] transition-all duration-300 ease-in-out shadow-md"
-        style={{ position: 'fixed', zIndex: 40 }}
       >
         <div className="flex items-center justify-between h-16 px-4 border-b">
           <Link to="/" className="flex items-center gap-3">
