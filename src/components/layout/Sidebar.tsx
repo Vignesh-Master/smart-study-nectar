@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { NavigationLinks } from './NavigationLinks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -9,8 +10,7 @@ import {
   Settings, 
   User, 
   Moon, 
-  Sun,
-  ChevronLeft
+  Sun
 } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { 
@@ -23,19 +23,37 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { motion } from 'framer-motion';
 
 export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
   const { theme, setTheme } = useTheme();
   
-  // We'll keep the sidebar expanded by default for desktop
-  useEffect(() => {
-    if (!isMobile) {
-      setCollapsed(false);
+  // Animation variants
+  const sidebarVariants = {
+    hidden: { x: -240 },
+    visible: { 
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }
     }
-  }, [isMobile]);
+  };
+  
+  const logoVariants = {
+    initial: { scale: 0.8, opacity: 0 },
+    animate: { 
+      scale: 1, 
+      opacity: 1,
+      transition: {
+        delay: 0.2,
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
   
   // For mobile, we use a sheet instead of the sidebar
   if (isMobile) {
@@ -43,35 +61,34 @@ export function Sidebar() {
   }
 
   return (
-    <div className="fixed inset-y-0 left-0 z-30">
+    <motion.div 
+      className="fixed inset-y-0 left-0 z-30"
+      initial="hidden"
+      animate="visible"
+      variants={sidebarVariants}
+    >
       <div
-        className={cn(
-          "flex flex-col bg-sidebar border-r h-full transition-all duration-300 ease-in-out shadow-md",
-          collapsed ? "w-[70px]" : "w-[240px]"
-        )}
+        className="flex flex-col bg-sidebar border-r h-full w-[240px] transition-all duration-300 ease-in-out shadow-md"
         style={{ position: 'fixed', zIndex: 40 }}
       >
         <div className="flex items-center justify-between h-16 px-4 border-b">
-          <Link to="/" className={cn("flex items-center gap-3", collapsed && "justify-center")}>
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary flex-shrink-0 animate-pulse-subtle">
-              <span className="font-bold text-white">L</span>
-            </div>
-            {!collapsed && <span className="font-semibold text-lg truncate">LearnHub</span>}
-          </Link>
-          {!collapsed && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setCollapsed(true)}
-              className="h-8 w-8 flex-shrink-0"
+          <Link to="/" className="flex items-center gap-3">
+            <motion.div 
+              className="flex items-center justify-center w-10 h-10 rounded-md bg-primary flex-shrink-0"
+              variants={logoVariants}
+              initial="initial"
+              animate="animate"
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          )}
+              <span className="font-bold text-white text-lg">L</span>
+            </motion.div>
+            <span className="font-semibold text-lg truncate">LearnHub</span>
+          </Link>
         </div>
         
         <div className="flex-1 overflow-auto py-4">
-          <NavigationLinks collapsed={collapsed} />
+          <NavigationLinks collapsed={false} />
         </div>
         
         <div className="p-4 mt-auto border-t">
@@ -79,21 +96,21 @@ export function Sidebar() {
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="ghost" 
-                className={cn(
-                  "w-full gap-3 px-3",
-                  collapsed ? "justify-center px-0" : "justify-start"
-                )}
+                className="w-full gap-3 px-3 justify-start"
               >
-                <Avatar className="h-8 w-8 flex-shrink-0 animate-float">
-                  <AvatarImage src="/placeholder.svg" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                {!collapsed && (
-                  <div className="flex flex-col items-start text-sm truncate">
-                    <span className="font-medium truncate">John Doe</span>
-                    <span className="text-xs text-muted-foreground truncate">Premium</span>
-                  </div>
-                )}
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Avatar className="h-8 w-8 flex-shrink-0">
+                    <AvatarImage src="/placeholder.svg" />
+                    <AvatarFallback>JD</AvatarFallback>
+                  </Avatar>
+                </motion.div>
+                <div className="flex flex-col items-start text-sm truncate">
+                  <span className="font-medium truncate">John Doe</span>
+                  <span className="text-xs text-muted-foreground truncate">Premium</span>
+                </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" align="start" className="w-[240px] p-2">
@@ -138,6 +155,6 @@ export function Sidebar() {
           </DropdownMenu>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
