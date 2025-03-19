@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Brain, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { CustomButton } from '@/components/ui/custom-button';
 import { CustomCard } from '@/components/ui/custom-card';
 import { useToast } from '@/components/ui/use-toast';
@@ -12,80 +14,153 @@ const VerifyEmail = () => {
   const { toast } = useToast();
   const [countdown, setCountdown] = useState(60);
   const [isResending, setIsResending] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
   
-  // Get email from location state or use a default
-  const email = location.state?.email || 'your email';
-
+  // Get email and verification code from location state or sessionStorage
+  const { email: stateEmail, verificationCode: stateVerificationCode } = 
+    location.state || { email: null, verificationCode: null };
+  
+  const [email, setEmail] = useState(stateEmail || '');
+  const [expectedCode, setExpectedCode] = useState(stateVerificationCode || '');
+  
+  // Countdown timer for verification code expiration
   useEffect(() => {
+    // Try to get data from sessionStorage if not in location state
+    if (!stateEmail || !stateVerificationCode) {
+      const storedData = sessionStorage.getItem('signupData');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        setEmail(parsedData.email || '');
+        setExpectedCode(parsedData.verificationCode || '');
+        
+        // Calculate remaining time
+        const elapsedTime = Math.floor((Date.now() - parsedData.timestamp) / 1000);
+        const remainingTime = Math.max(0, 60 - elapsedTime);
+        setCountdown(remainingTime);
+      }
+    }
+    
     let timer: NodeJS.Timeout;
     if (countdown > 0 && !isVerified) {
       timer = setTimeout(() => setCountdown(countdown - 1), 1000);
     }
     return () => clearTimeout(timer);
-  }, [countdown, isVerified]);
+  }, [countdown, isVerified, stateEmail, stateVerificationCode]);
 
-  // Check for verification in URL params (if user clicked email link)
-  useEffect(() => {
-    const handleVerificationFromURL = async () => {
-      const url = new URL(window.location.href);
-      const token = url.searchParams.get('token');
-      const type = url.searchParams.get('type');
-      
-      if (token && type === 'signup') {
-        try {
-          // Attempt to verify the token
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: 'signup',
-          });
-          
-          if (error) {
-            throw error;
-          }
-          
-          setIsVerified(true);
-          toast({
-            title: "Email verified!",
-            description: "Your account has been successfully verified.",
-          });
-          
-          // After a delay, navigate to the login page
-          setTimeout(() => {
-            navigate('/login');
-          }, 3000);
-        } catch (error: any) {
-          toast({
-            variant: "destructive",
-            title: "Verification failed",
-            description: error.message || "Could not verify your email. Please try again.",
-          });
-        }
-      }
-    };
+  const handleVerification = async () => {
+    if (!verificationCode) {
+      toast({
+        variant: "destructive",
+        title: "Code required",
+        description: "Please enter the verification code sent to your email.",
+      });
+      return;
+    }
     
-    handleVerificationFromURL();
-  }, [navigate, toast]);
-
-  const handleResendCode = async () => {
-    setIsResending(true);
+    setIsVerifying(true);
     
     try {
-      // Resend verification email
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
+      // Check if code is expired
+      if (countdown <= 0) {
+        throw new Error("Verification code has expired. Please request a new one.");
+      }
+      
+      // Get stored signup data
+      const storedData = sessionStorage.getItem('signupData');
+      if (!storedData) {
+        throw new Error("Signup data not found. Please try signing up again.");
+      }
+      
+      const { email, password, name, verificationCode: storedCode } = JSON.parse(storedData);
+      
+      // Verify that the entered code matches the expected code
+      if (verificationCode !== storedCode && verificationCode !== expectedCode) {
+        throw new Error("Invalid verification code. Please try again.");
+      }
+      
+      // Create the user account with Supabase
+      const { data, error } = await supabase.auth.signUp({
         email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
       });
       
       if (error) {
         throw error;
       }
       
+      // Clear the signup data from sessionStorage
+      sessionStorage.removeItem('signupData');
+      
+      setIsVerified(true);
       toast({
-        title: "Verification code sent!",
+        title: "Account created!",
+        description: "Your account has been successfully created.",
+      });
+      
+      // After a delay, navigate to the login page
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000);
+      
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Verification failed",
+        description: error.message || "Could not verify your email. Please try again.",
+      });
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    setIsResending(true);
+    
+    try {
+      // Get stored signup data
+      const storedData = sessionStorage.getItem('signupData');
+      if (!storedData) {
+        throw new Error("Signup data not found. Please try signing up again.");
+      }
+      
+      const { email, password, name } = JSON.parse(storedData);
+      
+      // Generate a new verification code
+      const newVerificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Update the stored data with the new code and timestamp
+      sessionStorage.setItem('signupData', JSON.stringify({
+        email,
+        password,
+        name,
+        verificationCode: newVerificationCode,
+        timestamp: Date.now()
+      }));
+      
+      // Send a new verification email
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/verify-email`,
+      });
+      
+      if (error) {
+        throw error;
+      }
+      
+      setExpectedCode(newVerificationCode);
+      setCountdown(60);
+      
+      toast({
+        title: "New code sent!",
         description: "A new verification code has been sent to your email.",
       });
-      setCountdown(60);
+      
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -95,13 +170,6 @@ const VerifyEmail = () => {
     } finally {
       setIsResending(false);
     }
-  };
-
-  const handleVerification = async () => {
-    toast({
-      title: "Please check your email",
-      description: "Click the link in your email to verify your account.",
-    });
   };
 
   return (
@@ -133,7 +201,7 @@ const VerifyEmail = () => {
               </div>
               <h1 className="text-2xl font-bold">Email Verified!</h1>
               <p className="text-muted-foreground">
-                Your email has been successfully verified. Redirecting you to login...
+                Your account has been successfully created. Redirecting you to login...
               </p>
             </div>
           ) : (
@@ -145,13 +213,29 @@ const VerifyEmail = () => {
                   We've sent a verification code to <span className="font-medium">{email}</span>
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Please check your inbox and enter the code below to verify your email address.
+                  Please enter the 6-digit code below to verify your email address.
+                </p>
+                <p className="text-sm font-medium">
+                  Time remaining: <span className={countdown <= 10 ? "text-destructive" : ""}>{countdown}s</span>
                 </p>
               </div>
               
-              {/* For demo purposes, we'll just use a button instead of a real verification code input */}
-              <div className="flex justify-center mb-6">
-                <CustomButton onClick={handleVerification}>
+              <div className="space-y-4 mb-6">
+                <Input
+                  type="text"
+                  placeholder="Enter 6-digit code"
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                  maxLength={6}
+                  className="text-center text-lg"
+                />
+                
+                <CustomButton 
+                  onClick={handleVerification} 
+                  className="w-full"
+                  isLoading={isVerifying}
+                  disabled={countdown <= 0}
+                >
                   Verify Email
                 </CustomButton>
               </div>
@@ -163,7 +247,7 @@ const VerifyEmail = () => {
                 
                 {countdown > 0 ? (
                   <p className="text-sm">
-                    Resend code in <span className="font-medium">{countdown}s</span>
+                    You can request a new code in <span className="font-medium">{countdown}s</span>
                   </p>
                 ) : (
                   <CustomButton 

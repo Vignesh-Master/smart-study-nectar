@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Brain, ArrowLeft, CheckCircle } from 'lucide-react';
@@ -85,16 +86,21 @@ const Signup = () => {
     setIsLoading(true);
     
     try {
-      // Sign up with Supabase
-      const { data, error } = await supabase.auth.signUp({
+      // Generate a random 6-digit verification code
+      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      
+      // Store email, password and verification code in session storage for the verification page
+      sessionStorage.setItem('signupData', JSON.stringify({
         email,
         password,
-        options: {
-          data: {
-            full_name: name,
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
+        name,
+        verificationCode,
+        timestamp: Date.now() // Store timestamp for 60-second expiration
+      }));
+      
+      // Call Supabase to send the verification email with the code
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/verify-email`,
       });
       
       if (error) {
@@ -102,12 +108,12 @@ const Signup = () => {
       }
       
       toast({
-        title: "Account created!",
-        description: "Please check your email to verify your account.",
+        title: "Verification code sent!",
+        description: "Please check your email for the verification code.",
       });
       
-      // Store email for verification page
-      navigate('/verify-email', { state: { email } });
+      // Navigate to the verification page
+      navigate('/verify-email', { state: { email, verificationCode } });
       
     } catch (error: any) {
       toast({
@@ -115,7 +121,6 @@ const Signup = () => {
         title: "Signup failed",
         description: error.message || "An error occurred during signup.",
       });
-    } finally {
       setIsLoading(false);
     }
   };

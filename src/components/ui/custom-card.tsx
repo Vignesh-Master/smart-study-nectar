@@ -35,7 +35,7 @@ export function CustomCard({
         "border",
         glassmorphism && "bg-card/30 backdrop-blur-md border-muted/20",
         shouldHover && "transition-all duration-200 hover:shadow-lg hover:border-primary/50",
-        animation && animation,
+        animation,
         className
       )}
       {...props}
